@@ -29,14 +29,14 @@ namespace manager
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Connectsql cons = new Connectsql();
+            SqlDataReader reader;
             String username = textBox1.Text;
             String password = textBox2.Text;
-            Connectsql cons = new Connectsql();
-            SqlDataReader reader = cons.excutesql($"SELECT user_name,user_permission FROM [user] WHERE user_name='{username}' AND user_password='{password}';", true);
+            reader = cons.excutesql($"SELECT user_name,user_permission,user_id FROM [user] WHERE user_name='{username}' AND user_password='{password}';", true);
             if (reader.Read())
             {
-                login(reader[0].ToString(), reader[1].ToString());
-                MessageBox.Show("登录成功");
+                login(reader[0].ToString(), reader[1].ToString(),reader[2].ToString());
                 f.switchForm(0);
             }
             else
@@ -47,14 +47,19 @@ namespace manager
             cons.Close();
         }
         
-        private void login(String username,String premission)
+        private void login(String username,String premission,String userid)
         {
+            //设置label
             if (premission == "0")
-                f.premission = "普通用户";
+                f.set_label("当前在线用户：" + username);
             else
-                f.premission = "管理员";
+                f.set_label("当前在线管理员：" + username);
+            //设置主form属性
             f.username = username;
-            f.set_label("当前在线" + premission + ":" + username);
+            f.premission = premission;
+            f.userid = userid;
+            //修改界面内容
+            f.switchall(premission);
         }
     }
 }
