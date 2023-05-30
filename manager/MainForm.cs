@@ -13,13 +13,14 @@ namespace manager
 {
     public partial class MainForm : Form
     {
-        UserControl[] controls = new UserControl[1];
-        String username = "";
-        String premission = "";
+        UserControl[] controls = new UserControl[2];
+        public String username = "";
+        public String premission = "";
         public MainForm()
         {
             InitializeComponent();
             controls[0] = new WelcomeForm(this);
+            controls[1] = new loginForm(this);
         }
 
         public void switchForm(int showform)
@@ -69,6 +70,11 @@ namespace manager
         private void 主页ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             switchForm(0);
+        }
+
+        public void set_label(String s)
+        {
+            label1.Text = s;
         }
     }
 }
