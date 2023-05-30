@@ -16,7 +16,7 @@ namespace manager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new WelcomePage());
+            Application.Run(new MainForm());
         }
     }
 }

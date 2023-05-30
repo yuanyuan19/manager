@@ -5,20 +5,23 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using mynamespace;
 namespace manager
 {
-    public partial class WelcomePage : Form
+    public partial class WelcomeForm : UserControl
     {
         String username = "";
         String premission = "";
-
-        public WelcomePage()
+        MainForm f;
+        public WelcomeForm(MainForm f)
         {
             InitializeComponent();
+            this.f = f;
+            
         }
 
         public String[] GetStringArray(SqlDataReader reader)
@@ -95,6 +98,7 @@ namespace manager
             if (username == "")
             {
                 MessageBox.Show("请先登录");
+                f.switchForm(1);
             }
         }
     }
