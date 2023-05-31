@@ -14,17 +14,19 @@ namespace manager
     public partial class MainForm : Form
     {
         //存子组件
-        UserControl[] controls = new UserControl[2];
+        public UserControl[] controls = new UserControl[3];
         //直接赋值，无需实例化，用到this要在构造函数中赋值，因为this在实例化后才指向当前实例
         public String userid = "";
         public String username = "";
         public String premission = "";
+        public String readerid = "";
         public MainForm()
         {
             InitializeComponent();
             //这里this就已经指向当前实例了
             controls[0] = new WelcomeForm(this);
             controls[1] = new loginForm(this);
+            controls[2] = new returnForm(this);
         }
 
         public void switchForm(int showform)
@@ -68,16 +70,6 @@ namespace manager
             switchForm(0);
         }
 
-        private void 登录ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            switchForm(1);
-        }
-
-        private void 主页ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            switchForm(0);
-        }
-
         public void set_label(String s)
         {
             label1.Text = s;
@@ -99,6 +91,38 @@ namespace manager
                 switchButtom(ints);
                 switchForm(0);
             }
+        }
+
+        private void 主页ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ((WelcomeForm)controls[0]).get_data();
+            switchForm(0);
+        }
+        private void 登录ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            switchForm(1);
+        }
+        private void 还书ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ((returnForm)controls[2]).get_data();
+            switchForm(2);
+        }
+
+        private void 登出ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int[] buttomint = { 0, 1 };
+            switchButtom(buttomint);
+            int[] formint = { 0 };
+            switchForm(1);
+
+            userid =username =premission = readerid = "";
+            set_label("未登录");
+
+    }
+
+        private void 管理书籍ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

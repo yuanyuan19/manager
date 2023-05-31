@@ -60,7 +60,7 @@ namespace manager
             reader.Close();
             cons.Close();
         }
-        private void get_data()
+        public void get_data()
         {
             DateTime fromdate = dateTimePicker1.Value;
             DateTime todate = dateTimePicker2.Value;
@@ -109,19 +109,13 @@ namespace manager
             {
                 Connectsql cons = new Connectsql();
                 SqlDataReader reader;
-                String user_id = f.userid;
-                //查询reader_id
-                reader = cons.excutesql($"SELECT reader_id FROM reader WHERE user_id={user_id};", true);
-                reader.Read();
-                String reader_id = reader[0].ToString();
-                reader.Close();
                 //查询图书数量
                 reader = cons.excutesql($"SELECT book_stock FROM book WHERE book_id={book_id};", true);
                 reader.Read();
                 int book_stock = int.Parse(reader[0].ToString());
                 reader.Close();
                 //查询借了几本书
-                reader = cons.excutesql($"SELECT COUNT(*) as borrowed_count FROM borrow  WHERE reader_id = '{reader_id}' AND return_date IS NULL;", true);
+                reader = cons.excutesql($"SELECT COUNT(*) as borrowed_count FROM borrow  WHERE reader_id = '{f.readerid}' AND return_date IS NULL;", true);
                 reader.Read();
                 int borrowed_count = int.Parse(reader[0].ToString());
                 reader.Close();
@@ -129,7 +123,7 @@ namespace manager
                 {
                     MessageBox.Show("图书库存不足");
                 }
-                else if ( borrowed_count> 3)
+                else if ( borrowed_count> 2)
                 {
                     MessageBox.Show("最大借阅3本书");
                 }
@@ -137,13 +131,13 @@ namespace manager
                 {
                     MessageBox.Show("借书成功");
                     //插入记录
-                    cons.excutesql($"INSERT INTO borrow (reader_id, book_id, borrow_date, due_date) VALUES ({reader_id}, {book_id}, GETDATE(), DATEADD(month, 1, GETDATE()));");
+                    cons.excutesql($"INSERT INTO borrow (reader_id, book_id, borrow_date, due_date) VALUES ({f.readerid}, {book_id}, GETDATE(), DATEADD(month, 1, GETDATE()));");
                     //减少图书库存
                     cons.excutesql($"UPDATE book SET book_stock = book_stock - 1 WHERE book_id = {book_id};");
                     //更新视图
                     get_data();
                 }
-
+                cons.Close();
             }
         }
     }

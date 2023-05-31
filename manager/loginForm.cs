@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -51,7 +52,16 @@ namespace manager
         {
             //设置label
             if (premission == "0")
+            {
                 f.set_label("当前在线用户：" + username);
+                //查询reader_id
+                Connectsql cons = new Connectsql();
+                SqlDataReader reader = cons.excutesql($"SELECT reader_id FROM reader WHERE user_id={userid};", true);
+                reader.Read();
+                String reader_id = reader[0].ToString();
+                reader.Close();
+                f.readerid = reader_id;
+            }
             else
                 f.set_label("当前在线管理员：" + username);
             //设置主form属性

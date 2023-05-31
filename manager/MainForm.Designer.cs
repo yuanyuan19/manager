@@ -41,6 +41,7 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(28, 28);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.主页ToolStripMenuItem,
             this.登录ToolStripMenuItem,
@@ -73,12 +74,14 @@
             this.管理ToolStripMenuItem.Name = "管理ToolStripMenuItem";
             this.管理ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
             this.管理ToolStripMenuItem.Text = "还书";
+            this.管理ToolStripMenuItem.Click += new System.EventHandler(this.还书ToolStripMenuItem_Click);
             // 
             // 管理书籍ToolStripMenuItem
             // 
             this.管理书籍ToolStripMenuItem.Name = "管理书籍ToolStripMenuItem";
             this.管理书籍ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.管理书籍ToolStripMenuItem.Text = "管理书籍";
+            this.管理书籍ToolStripMenuItem.Click += new System.EventHandler(this.管理书籍ToolStripMenuItem_Click);
             // 
             // 管理用户ToolStripMenuItem
             // 
@@ -91,6 +94,7 @@
             this.登出ToolStripMenuItem.Name = "登出ToolStripMenuItem";
             this.登出ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
             this.登出ToolStripMenuItem.Text = "登出";
+            this.登出ToolStripMenuItem.Click += new System.EventHandler(this.登出ToolStripMenuItem_Click);
             // 
             // label1
             // 
