@@ -93,8 +93,12 @@ namespace manager
                 String[] s = { "book_id", "book_name", "book_author", " book_publisher", "book_publish_date", "book_price", "book_stock"};
                 // 根据行和列索引获取单元格的值
                 DataGridViewCell cell = dataGridView1[columnIndex, rowIndex];
-                //是null就用""代替
-                String value = cell.Value?.ToString() ?? "";
+                //没填就用null代替插入
+                String value;
+                if (cell.Value == null)
+                    value = "null";
+                else
+                    value = $"'{cell.Value.ToString()}'";
                 Connectsql cons = new Connectsql();
                 cons.excutesql($"UPDATE book SET {s[columnIndex]} = '{value}' WHERE book_id = {book_id};");
                 cons.Close();
@@ -106,9 +110,11 @@ namespace manager
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             //index从第一行记录开始，为0
-            if(dataGridView1.CurrentRow.Index<rolls)
+            if (dataGridView1.CurrentRow.Index < rolls)
+            {
                 book_id = dataGridView1.CurrentRow.Cells[0].Value.ToString();
-
+                label1.Text = "当前book_id为"+book_id;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -123,7 +129,26 @@ namespace manager
 
         private void button3_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Click");
+            String s = textBox4.Text;
+            String[] s_split = s.Split('，');
+            String res = "(";
+            for (int index = 0; index < s_split.Length; index++)
+            {
+                if (s_split[index] == "null")
+                    res += "null";
+                else
+                    res += $"'{s_split[index]}'";
+                if (index != s_split.Length - 1)
+                {
+                    res += ',';
+                }
+            }
+            res += ')';
+            Connectsql cons = new Connectsql();
+            cons.excutesql($"INSERT INTO book (book_name, book_author, book_publisher, book_publish_date, book_price, book_stock) VALUES {res}");
+            cons.Close();
+            MessageBox.Show(res+"已经成功添加");
+            get_data();
         }
     }
 }
