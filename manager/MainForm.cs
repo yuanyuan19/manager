@@ -14,7 +14,7 @@ namespace manager
     public partial class MainForm : Form
     {
         //存子组件
-        public UserControl[] controls = new UserControl[3];
+        public UserControl[] controls = new UserControl[6];
         //直接赋值，无需实例化，用到this要在构造函数中赋值，因为this在实例化后才指向当前实例
         public String userid = "";
         public String username = "";
@@ -27,6 +27,9 @@ namespace manager
             controls[0] = new WelcomeForm(this);
             controls[1] = new loginForm(this);
             controls[2] = new returnForm(this);
+            controls[3] = new BookForm(this);
+            controls[4] = new UserForm(this);
+            controls[5] = new BorrowForm(this);
         }
 
         public void switchForm(int showform)
@@ -81,13 +84,13 @@ namespace manager
             if (s == "1")
             {
                 
-                int[] ints = { 0, 3, 4, 5 };
+                int[] ints = {3, 4, 5 ,6};
                 switchButtom(ints);
                 switchForm(3);
             }
             else
             {
-                int[] ints = { 0, 2, 5 };
+                int[] ints = { 0, 2, 6};
                 switchButtom(ints);
                 switchForm(0);
             }
@@ -95,7 +98,7 @@ namespace manager
 
         private void 主页ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ((WelcomeForm)controls[0]).get_data();
+            //主页无需重新获取数据
             switchForm(0);
         }
         private void 登录ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -104,6 +107,7 @@ namespace manager
         }
         private void 还书ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //不能让其他用户看见你的视图，切换到这个视图时重新获取下数据
             ((returnForm)controls[2]).get_data();
             switchForm(2);
         }
@@ -122,7 +126,19 @@ namespace manager
 
         private void 管理书籍ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            ((BookForm)controls[3]).get_data();
+            switchForm(3);
         }
+
+        private void 管理用户ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            switchForm(4);
+        }
+
+        private void 管理借阅记录ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            switchForm(5);
+        }
+
     }
 }

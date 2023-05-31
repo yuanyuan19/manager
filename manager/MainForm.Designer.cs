@@ -34,6 +34,7 @@
             this.管理ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.管理书籍ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.管理用户ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.管理借阅记录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.登出ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
@@ -48,6 +49,7 @@
             this.管理ToolStripMenuItem,
             this.管理书籍ToolStripMenuItem,
             this.管理用户ToolStripMenuItem,
+            this.管理借阅记录ToolStripMenuItem,
             this.登出ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -88,6 +90,14 @@
             this.管理用户ToolStripMenuItem.Name = "管理用户ToolStripMenuItem";
             this.管理用户ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
             this.管理用户ToolStripMenuItem.Text = "管理用户";
+            this.管理用户ToolStripMenuItem.Click += new System.EventHandler(this.管理用户ToolStripMenuItem_Click);
+            // 
+            // 管理借阅记录ToolStripMenuItem
+            // 
+            this.管理借阅记录ToolStripMenuItem.Name = "管理借阅记录ToolStripMenuItem";
+            this.管理借阅记录ToolStripMenuItem.Size = new System.Drawing.Size(92, 21);
+            this.管理借阅记录ToolStripMenuItem.Text = "管理借阅记录";
+            this.管理借阅记录ToolStripMenuItem.Click += new System.EventHandler(this.管理借阅记录ToolStripMenuItem_Click);
             // 
             // 登出ToolStripMenuItem
             // 
@@ -133,5 +143,6 @@
         private System.Windows.Forms.ToolStripMenuItem 管理用户ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 登出ToolStripMenuItem;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem 管理借阅记录ToolStripMenuItem;
     }
 }

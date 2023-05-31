@@ -36,21 +36,10 @@ namespace manager
         }
         private void WelcomePage_Load(object sender, EventArgs e)
         {
-            //dataGridView1
-            Connectsql cons = new Connectsql();
-            SqlDataReader reader=cons.excutesql("SELECT * FROM all_books", true);
-            while (reader.Read())
-            {
-                dataGridView1.Rows.Add(GetStringArray(reader));
-            }
-            reader.Close();
-            cons.Close();
-
-
 
             //comboBox1
-            cons = new Connectsql();
-            reader = cons.excutesql("SELECT category_name FROM category", true);
+            Connectsql cons = new Connectsql();
+            SqlDataReader reader = cons.excutesql("SELECT category_name FROM category", true);
             comboBox1.Items.Add("全部");
             while (reader.Read())
             {
@@ -59,7 +48,12 @@ namespace manager
             comboBox1.SelectedIndex = 0;
             reader.Close();
             cons.Close();
+
+            //dataGridView1
+            get_data();
         }
+
+
         public void get_data()
         {
             DateTime fromdate = dateTimePicker1.Value;

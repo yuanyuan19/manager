@@ -38,7 +38,6 @@ namespace manager
             if (reader.Read())
             {
                 login(reader[0].ToString(), reader[1].ToString(),reader[2].ToString());
-                f.switchForm(0);
             }
             else
             {

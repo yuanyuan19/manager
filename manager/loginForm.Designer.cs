@@ -73,7 +73,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(364, 21);
             this.textBox1.TabIndex = 4;
-            this.textBox1.Text = "user1";
+            this.textBox1.Text = "admin";
             // 
             // textBox2
             // 
@@ -81,7 +81,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(364, 21);
             this.textBox2.TabIndex = 5;
-            this.textBox2.Text = "password1";
+            this.textBox2.Text = "admin";
             // 
             // label3
             // 
