@@ -99,25 +99,33 @@ namespace manager
         {
             String s = textBox1.Text;
             String[] s_split = s.Split('，');
-            String res = "(";
-            for (int index = 0; index < s_split.Length; index++)
+            if (s_split.Length == 5)
             {
-                if (s_split[index] == "null")
-                    res += "null";
-                else
-                    res += $"'{s_split[index]}'";
-                if (index != s_split.Length - 1)
+                String res = "(";
+                for (int index = 0; index < s_split.Length; index++)
                 {
-                    res += ',';
+                    if (s_split[index] == "null")
+                        res += "null";
+                    else
+                        res += $"'{s_split[index]}'";
+                    if (index != s_split.Length - 1)
+                    {
+                        res += ',';
+                    }
                 }
+                res += ')';
+                MessageBox.Show(res + "已经成功添加");
+                Connectsql cons = new Connectsql();
+                cons.excutesql($"INSERT INTO borrow (reader_id, book_id, borrow_date, due_date, return_date) VALUES {res}");
+                cons.Close();
+
+                get_data();
             }
-            res += ')';
-            MessageBox.Show(res + "已经成功添加");
-            Connectsql cons = new Connectsql();
-            cons.excutesql($"INSERT INTO borrow (reader_id, book_id, borrow_date, due_date, return_date) VALUES {res}");
-            cons.Close();
+            else
+            {
+                MessageBox.Show("格式不对捏");
+            }
             
-            get_data();
         }
     }
 }

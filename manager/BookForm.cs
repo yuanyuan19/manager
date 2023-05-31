@@ -100,7 +100,7 @@ namespace manager
                 else
                     value = $"'{cell.Value.ToString()}'";
                 Connectsql cons = new Connectsql();
-                cons.excutesql($"UPDATE book SET {s[columnIndex]} = '{value}' WHERE book_id = {book_id};");
+                cons.excutesql($"UPDATE book SET {s[columnIndex]} = {value} WHERE book_id = {book_id};");
                 cons.Close();
                 MessageBox.Show("值已成功修改为"+value);
                 get_data();
@@ -131,24 +131,31 @@ namespace manager
         {
             String s = textBox4.Text;
             String[] s_split = s.Split('，');
-            String res = "(";
-            for (int index = 0; index < s_split.Length; index++)
+            if (s_split.Length == 6)
             {
-                if (s_split[index] == "null")
-                    res += "null";
-                else
-                    res += $"'{s_split[index]}'";
-                if (index != s_split.Length - 1)
+                String res = "(";
+                for (int index = 0; index < s_split.Length; index++)
                 {
-                    res += ',';
+                    if (s_split[index] == "null")
+                        res += "null";
+                    else
+                        res += $"'{s_split[index]}'";
+                    if (index != s_split.Length - 1)
+                    {
+                        res += ',';
+                    }
                 }
+                res += ')';
+                Connectsql cons = new Connectsql();
+                cons.excutesql($"INSERT INTO book (book_name, book_author, book_publisher, book_publish_date, book_price, book_stock) VALUES {res}");
+                cons.Close();
+                MessageBox.Show(res + "已经成功添加");
+                get_data();
             }
-            res += ')';
-            Connectsql cons = new Connectsql();
-            cons.excutesql($"INSERT INTO book (book_name, book_author, book_publisher, book_publish_date, book_price, book_stock) VALUES {res}");
-            cons.Close();
-            MessageBox.Show(res+"已经成功添加");
-            get_data();
+            else
+            {
+                MessageBox.Show("格式不对捏");
+            }
         }
     }
 }

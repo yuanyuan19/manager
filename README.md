@@ -721,142 +721,149 @@ public partial class returnForm : UserControl
 
 ```c#
 public partial class BookForm : UserControl
-{
-    MainForm f;
-    int rolls;
-    String book_id;
-    public BookForm(MainForm f)
     {
-        InitializeComponent();
-        this.f = f;
-    }
-    public String[] GetStringArray(SqlDataReader reader)
-    {
-        List<string> stringList = new List<string>();
-        for (int i = 0; i < reader.FieldCount; i++)
+        MainForm f;
+        int rolls;
+        String book_id;
+        public BookForm(MainForm f)
         {
-            stringList.Add(reader[i].ToString());
+            InitializeComponent();
+            this.f = f;
         }
-        return stringList.ToArray();
-    }
-    public void get_data()
-    {
-            DateTime fromdate = dateTimePicker1.Value;
-            DateTime todate = dateTimePicker2.Value;
-            String maintext = textBox1.Text;
-            String author = textBox2.Text;
-            String publisher = textBox3.Text;
-            String category = comboBox1.Text.ToString();
-            dataGridView1.Rows.Clear();
-            rolls = 0;
-
-            String sql = $"SELECT * FROM book WHERE book_id IN (SELECT book_id FROM book WHERE (book_name LIKE '%{maintext}%' AND book_author LIKE '%{author}%' AND book_publisher LIKE '%{publisher}%' AND book_publish_date >= '{fromdate}' AND book_publish_date <= '{todate}'));";
-            if (category != "全部")
+        public String[] GetStringArray(SqlDataReader reader)
+        {
+            List<string> stringList = new List<string>();
+            for (int i = 0; i < reader.FieldCount; i++)
             {
-                sql = $"SELECT * FROM book WHERE book_id IN (SELECT book_id FROM book WHERE (book_name LIKE '%{maintext}%' AND book_author LIKE '%{author}%' AND book_publisher LIKE '%{publisher}%' AND book_publish_date >= '{fromdate}' AND book_publish_date <= '{todate}' AND book_id in (SELECT book_id FROM book_category WHERE category_id in (SELECT category_id FROM category WHERE category_name='{category}'))));";
+                stringList.Add(reader[i].ToString());
             }
-            Connectsql cons = new Connectsql();
-            SqlDataReader reader = cons.excutesql(sql, true);
+            return stringList.ToArray();
+        }
+        public void get_data()
+        {
+                DateTime fromdate = dateTimePicker1.Value;
+                DateTime todate = dateTimePicker2.Value;
+                String maintext = textBox1.Text;
+                String author = textBox2.Text;
+                String publisher = textBox3.Text;
+                String category = comboBox1.Text.ToString();
+                dataGridView1.Rows.Clear();
+                rolls = 0;
 
+                String sql = $"SELECT * FROM book WHERE book_id IN (SELECT book_id FROM book WHERE (book_name LIKE '%{maintext}%' AND book_author LIKE '%{author}%' AND book_publisher LIKE '%{publisher}%' AND book_publish_date >= '{fromdate}' AND book_publish_date <= '{todate}'));";
+                if (category != "全部")
+                {
+                    sql = $"SELECT * FROM book WHERE book_id IN (SELECT book_id FROM book WHERE (book_name LIKE '%{maintext}%' AND book_author LIKE '%{author}%' AND book_publisher LIKE '%{publisher}%' AND book_publish_date >= '{fromdate}' AND book_publish_date <= '{todate}' AND book_id in (SELECT book_id FROM book_category WHERE category_id in (SELECT category_id FROM category WHERE category_name='{category}'))));";
+                }
+                Connectsql cons = new Connectsql();
+                SqlDataReader reader = cons.excutesql(sql, true);
+
+                while (reader.Read())
+                {
+                    dataGridView1.Rows.Add(GetStringArray(reader));
+                    rolls++;
+                }
+                reader.Close();
+                cons.Close();
+        }
+
+        private void BookForm_Load(object sender, EventArgs e)
+        { 
+            //comboBox1
+            Connectsql cons = new Connectsql();
+            SqlDataReader reader = cons.excutesql("SELECT category_name FROM category", true);
+            comboBox1.Items.Add("全部");
             while (reader.Read())
             {
-                dataGridView1.Rows.Add(GetStringArray(reader));
-                rolls++;
+                comboBox1.Items.Add(reader[0].ToString());
             }
+            comboBox1.SelectedIndex = 0;
             reader.Close();
             cons.Close();
-    }
 
-    private void BookForm_Load(object sender, EventArgs e)
-    { 
-        //comboBox1
-        Connectsql cons = new Connectsql();
-        SqlDataReader reader = cons.excutesql("SELECT category_name FROM category", true);
-        comboBox1.Items.Add("全部");
-        while (reader.Read())
-        {
-            comboBox1.Items.Add(reader[0].ToString());
-        }
-        comboBox1.SelectedIndex = 0;
-        reader.Close();
-        cons.Close();
-
-        //dataGridView1
-        get_data();
-    }
-
-    private void button1_Click(object sender, EventArgs e)
-    {
-        get_data();
-    }
-
-    private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-    {   
-        //表格被修改后触发，从第一条记录为0开始
-        if (e.RowIndex >= 0&&e.RowIndex<rolls)
-        {
-            int rowIndex = e.RowIndex;
-            int columnIndex = e.ColumnIndex;
-            String[] s = { "book_id", "book_name", "book_author", " book_publisher", "book_publish_date", "book_price", "book_stock"};
-            // 根据行和列索引获取单元格的值
-            DataGridViewCell cell = dataGridView1[columnIndex, rowIndex];
-            //没填就用null代替插入
-            String value;
-            if (cell.Value == null)
-                value = "null";
-            else
-                value = $"'{cell.Value.ToString()}'";
-            Connectsql cons = new Connectsql();
-            cons.excutesql($"UPDATE book SET {s[columnIndex]} = '{value}' WHERE book_id = {book_id};");
-            cons.Close();
-            MessageBox.Show("值已成功修改为"+value);
+            //dataGridView1
             get_data();
         }
-    }
 
-    private void dataGridView1_SelectionChanged(object sender, EventArgs e)
-    {
-        //index从第一行记录开始，为0
-        if (dataGridView1.CurrentRow.Index < rolls)
+        private void button1_Click(object sender, EventArgs e)
         {
-            book_id = dataGridView1.CurrentRow.Cells[0].Value.ToString();
-            label1.Text = "当前book_id为"+book_id;
+            get_data();
         }
-    }
 
-    private void button2_Click(object sender, EventArgs e)
-    {
-        Connectsql cons = new Connectsql();
-        cons.excutesql($"DELETE FROM book WHERE book_id={book_id};");
-        cons.Close();
-        MessageBox.Show("编号为"+book_id + "的书被删除");
-        get_data();
-
-    }
-
-    private void button3_Click(object sender, EventArgs e)
-    {
-        String s = textBox4.Text;
-        String[] s_split = s.Split('，');
-        String res = "(";
-        for (int index = 0; index < s_split.Length; index++)
-        {
-            if (s_split[index] == "null")
-                res += "null";
-            else
-                res += $"'{s_split[index]}'";
-            if (index != s_split.Length - 1)
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {   
+            //表格被修改后触发，从第一条记录为0开始
+            if (e.RowIndex >= 0&&e.RowIndex<rolls)
             {
-                res += ',';
+                int rowIndex = e.RowIndex;
+                int columnIndex = e.ColumnIndex;
+                String[] s = { "book_id", "book_name", "book_author", " book_publisher", "book_publish_date", "book_price", "book_stock"};
+                // 根据行和列索引获取单元格的值
+                DataGridViewCell cell = dataGridView1[columnIndex, rowIndex];
+                //没填就用null代替插入
+                String value;
+                if (cell.Value == null)
+                    value = "null";
+                else
+                    value = $"'{cell.Value.ToString()}'";
+                Connectsql cons = new Connectsql();
+                cons.excutesql($"UPDATE book SET {s[columnIndex]} = {value} WHERE book_id = {book_id};");
+                cons.Close();
+                MessageBox.Show("值已成功修改为"+value);
+                get_data();
             }
         }
-        res += ')';
-        Connectsql cons = new Connectsql();
-        cons.excutesql($"INSERT INTO book (book_name, book_author, book_publisher, book_publish_date, book_price, book_stock) VALUES {res}");
-        cons.Close();
-        MessageBox.Show(res+"已经成功添加");
-        get_data();
-    }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            //index从第一行记录开始，为0
+            if (dataGridView1.CurrentRow.Index < rolls)
+            {
+                book_id = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+                label1.Text = "当前book_id为"+book_id;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Connectsql cons = new Connectsql();
+            cons.excutesql($"DELETE FROM book WHERE book_id={book_id};");
+            cons.Close();
+            MessageBox.Show("编号为"+book_id + "的书被删除");
+            get_data();
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            String s = textBox4.Text;
+            String[] s_split = s.Split('，');
+            if (s_split.Length == 6)
+            {
+                String res = "(";
+                for (int index = 0; index < s_split.Length; index++)
+                {
+                    if (s_split[index] == "null")
+                        res += "null";
+                    else
+                        res += $"'{s_split[index]}'";
+                    if (index != s_split.Length - 1)
+                    {
+                        res += ',';
+                    }
+                }
+                res += ')';
+                Connectsql cons = new Connectsql();
+                cons.excutesql($"INSERT INTO book (book_name, book_author, book_publisher, book_publish_date, book_price, book_stock) VALUES {res}");
+                cons.Close();
+                MessageBox.Show(res + "已经成功添加");
+                get_data();
+            }
+            else
+            {
+                MessageBox.Show("格式不对捏");
+            }
+        }
 }
 ```
 
@@ -955,34 +962,41 @@ public partial class BorrowForm : UserControl
     {
         String s = textBox1.Text;
         String[] s_split = s.Split('，');
-        String res = "(";
-        for (int index = 0; index < s_split.Length; index++)
+        if (s_split.Length == 5)
         {
-            if (s_split[index] == "null")
-                res += "null";
-            else
-                res += $"'{s_split[index]}'";
-            if (index != s_split.Length - 1)
+            String res = "(";
+            for (int index = 0; index < s_split.Length; index++)
             {
-                res += ',';
+                if (s_split[index] == "null")
+                    res += "null";
+                else
+                    res += $"'{s_split[index]}'";
+                if (index != s_split.Length - 1)
+                {
+                    res += ',';
+                }
             }
-        }
-        res += ')';
-        MessageBox.Show(res + "已经成功添加");
-        Connectsql cons = new Connectsql();
-        cons.excutesql($"INSERT INTO borrow (reader_id, book_id, borrow_date, due_date, return_date) VALUES {res}");
-        cons.Close();
+            res += ')';
+            MessageBox.Show(res + "已经成功添加");
+            Connectsql cons = new Connectsql();
+            cons.excutesql($"INSERT INTO borrow (reader_id, book_id, borrow_date, due_date, return_date) VALUES {res}");
+            cons.Close();
 
-        get_data();
+            get_data();
+        }
+        else
+        {
+            MessageBox.Show("格式不对捏");
+        }
     }
 }
 ```
 
 ### 总结
 
-原生的`sql`在实际开发中并不适合使用，通过这次课设我很好的感受到了这一点，想要调用`sql`语句实在是太麻烦了，还得不断的在各类数据类型中转化，增删改查泰国凌乱。使用后端框架提供统一，完善的数据模型和查询语句显然是更好的做法，不但和数据库解耦，还可以使用强大的各类模块快速和高质量的实现业务逻辑。
+原生的`sql`在实际开发中并不适合使用，通过这次课设我很好的感受到了这一点，首先是想要调用`sql`语句实在是太麻烦了，得不断的在各种数据类型中转化，增删改查还是以字符串形式嵌入在代码里的，很凌乱。其次是想真的做到完整性约束是很困难的事情，强行去实现没什么意义，使用后端框架提供统一，完善的数据模型和查询语句显然是更好的做法，不但和数据库解耦，还可以使用强大的各类模块快速和高质量的实现业务逻辑。
 
-当然，这次数据库课设的主要目的是巩固了数据库的基础知识，我发现了自己对视图一直以来的一个误解，并尽可能的把各类查询都写了一遍，比如子查询，联结查询等，用上了日期函数和字符串聚合函数，模糊匹配等等。
+当然，这次数据库课设的主要目的是巩固了数据库的基础知识，我发现了自己对视图一直以来的一个误解，并尽可能的把各类查询都写了一遍，比如子查询，联结查询等，用上了日期函数和字符串聚合函数，模糊匹配等等，也用到了插入删除修改记录等但没那么多。
 
 ### 知识补充
 
