@@ -98,7 +98,7 @@ namespace manager
 
         private void 主页ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //主页无需重新获取数据
+            ((WelcomeForm)controls[0]).get_data();
             switchForm(0);
         }
         private void 登录ToolStripMenuItem_Click(object sender, EventArgs e)
